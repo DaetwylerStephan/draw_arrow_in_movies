@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+		http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.scijava</groupId>
+		<artifactId>pom-scijava</artifactId>
+		<version>14.0.0</version>
+	<relativePath />
+	</parent>
+	
+	<artifactId>SPIM_DrawArrowInMovie_</artifactId>
+
+	<name>plugins/SPIM_DrawArrowInMovie_.jar</name>
+	<description>A plugin to draw arrows in movies</description>
+	<url>http://www.github.com/DaetwylerStephan/draw_arrow_in_movies</url>
+	<inceptionYear>2020</inceptionYear>
+	<organization>
+		<name>UT Southwestern</name>
+	</organization>
+	
+	<licenses>
+		<license>
+			<name>GNU General Public Licence v3.0</name>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>DaetwylerStephan</id>
+			<name>Stephan Daetwyler </name>
+		</developer>
+	</developers>
+
+	<contributors>
+		<contributor>
+			<name> Carl D Modes and Reto Fiolka</name>
+		</contributor>
+	</contributors>
+
+	<scm>
+		<connection>scm:git:git://github.com/DaetwylerStephan/draw_arrow_in_movies</connection>
+	</scm>
+
+	<mailingLists>
+		<mailingList>
+			<name> None</name>
+		</mailingList>
+	</mailingLists>
+	
+	<issueManagement>
+		<system> GitHub Issues</system>
+		<url>http://github.com/DaetwylerStephan/draw_arrow_in_movies</url>
+	</issueManagement>
+	<ciManagement>
+		<system>None</system>
+	</ciManagement>
+	
+	<properties>
+		<license.licenseName>GNU v3</license.licenseName>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>net.imagej</groupId>
+			<artifactId>ij</artifactId>
+			
+		</dependency>
+		<dependency>
+			<groupId>sc.fiji</groupId>
+			<artifactId>fiji-lib</artifactId>
+		</dependency>
+		<dependency>
+			<!-- NB: dependency:analyze erroneously flags this, but it's required -->
+			<groupId>sc.fiji</groupId>
+			<artifactId>legacy-imglib1</artifactId>
+		</dependency>
+		
+	</dependencies>
+
+	<!-- NB: for project parent -->
+	<repositories>
+		<repository>
+			<id>imagej.releases</id>
+			<url>http://maven.imagej.net/content/repositories/releases</url>
+		</repository>
+		<repository>
+			<id>imagej.snapshots</id>
+			<url>http://maven.imagej.net/content/repositories/snapshots</url>
+		</repository>
+	</repositories>
+
+</project>
