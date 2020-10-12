@@ -50,10 +50,10 @@ import ij.WindowManager;
 
 public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListener {
 	
-	private String writetofilename;
-	private String loadfile;
+	private String writetofilename = "D:\\tutorial\\pointfile\\pointfile.txt";
+	private String loadfile = "D:\\tutorial\\pointfile\\pointfile.txt";
 	private String image;
-	private ImagePlus imp;
+	private ImagePlus imp = new ImagePlus();
 	private ImageCanvas canvas;
 	
 	private HashMap<Integer, ArrayList<int[]>> pointmap = new HashMap<Integer, ArrayList<int[]>>();
@@ -74,38 +74,68 @@ public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListene
 	@Override
 	public void run(String args) {
 		
+		
+		openMovie();
+    //--------------------add arrowpanel----------------------------------------------------------
+	    arrowpanel.setLocationRelativeTo(null);
+	    arrowpanel.setVisible(true);
+		
+	}			
+			
+			
+	/**
+	 * Output: ImagePlus object
+	 *
+	 */
+	public void openMovie(){
+		
+		String[] selection_open = {"New movie", "Already opened movie"};
+		String[] open_images = WindowManager.getImageTitles();
+		System.out.println(Arrays.toString(open_images));
 		//----------get user input--------------------------------------------------------------------------
 		//generate an object of GenericDialog class to which options can be added and which can be evaluated
 		final GenericDialogPlus gd = new GenericDialogPlus( "Indicate folder" );
-		
+		if(open_images.length>0) {
+		gd.addChoice("Which movie to open", selection_open, "New movie");
+		gd.addChoice("List of open images", open_images, open_images[0]);
+		}
 		gd.addFileField( "Load movie", "D:\\tutorial\\movie.tif", 50);
-		gd.addFileField( "Specify pointfile path (optional)", "D:\\tutorial\\pointfile\\pointfile.txt", 50);
 		gd.showDialog();
 
 		if ( gd.wasCanceled())
 			return;
-		this.image = gd.getNextString();
-		this.loadfile = gd.getNextString();
+		
+		String choice = "New movie";
+		String opened_movie ="";
+		if(open_images.length>0) {
+			choice = gd.getNextChoice();
+			opened_movie = gd.getNextChoice();
+			this.image = gd.getNextString();
+		
+		}else {
+			this.image = gd.getNextString();
+	
+		}
 		
 		//------Load image data-----------------------------------------------------------------------------
-	
-		this.imp = new ImagePlus();
-		
-		if(image.endsWith(".tif")){
+		if(choice ==  "New movie") {
+		if(this.image.endsWith(".tif")){
 			//it either loads .tif file 
 			imp = IJ.openImage(image);
-			File saveto = new File(image).getParentFile();
-			writetofilename = saveto + File.separator + "pointlist";
+			imp.setTitle(image);
+			imp.show();
 		}else{
 			//or an image sequence of individual tifs
 			imp = openStack(image);
-			writetofilename = image  + "_pointlist";
+			imp.setTitle(image);
+			imp.show();
+		}
+		}else {
+			imp = WindowManager.getImage(opened_movie);
 		}
 		
 		//------Display image and bring it to front--------------------------------------------------------
 		
-		imp.show();
-		imp.setTitle(image);
 	    WindowManager.getActiveWindow();
 	    	
 		//-------------set interaction gui listeners to interact with image ---------------------------
@@ -118,14 +148,7 @@ public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListene
 		win.addKeyListener(this);
 		canvas.addKeyListener(this);
 		///ImagePlus.addImageListener(this);
-	    	
-	    //--------------------add arrowpanel----------------------------------------------------------
-	    arrowpanel.setLocationRelativeTo(null);
-	    arrowpanel.setVisible(true);
-		
-	   	}			
-			
-			
+	}
 
 	
 	/**
@@ -271,7 +294,15 @@ public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListene
 	 * draw arrow overlay into image
 	 */
 	public void draw_arrowoverlay(){
-		
+		//error message if no points have been selected
+		if(interpolatedvalues==null) {
+			IJ.log("No points have been selected or loaded so far.");
+		}else {
+		//error message if no points have been selected after removing points	
+		if(interpolatedvalues.length<1) {
+			IJ.log("No points have been selected or loaded so far.");
+		}
+		else {
 		//get your arrow from the arrowpanel
 		this.arrow = arrowpanel.getselectedarrow();
 		
@@ -325,21 +356,37 @@ public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListene
 			
 			imp.updateAndDraw(); 			
 		}
+		}
+		}
 	}
 	
 	/**
 	 * take list of points, interpolate them and save points to a .txt file 
 	 */
 	public void save_points(){
-		System.out.println(Arrays.toString(interpolatedvalues[0]));
-		if(!pointmap.isEmpty()) {
-		printhashmap(pointmap);
-		InterpolateHashMap interpolateit = new InterpolateHashMap();
-		this.interpolatedvalues = interpolateit.interpolateList(pointmap);
-		writepointfile();} 
-		else {
+
+		if(pointmap.isEmpty()) {
 			IJ.log("no points are selected to save");
+		} else {
+			
+		//generate an object of GenericDialog class to ask for save folder
+		final GenericDialogPlus gd = new GenericDialogPlus( "Indicate folder" );	
+		gd.addFileField( "Specify pointfile save path", this.writetofilename, 50);
+		gd.showDialog();
+		if ( gd.wasCanceled())
+				return;
+		
+		this.writetofilename = gd.getNextString();
+		
+		if(!this.writetofilename.endsWith(".txt")) {
+			IJ.log("The provided filename does not end in .txt. Please provide a filename ending in .txt to save the points");
+		}else {
+			printhashmap(pointmap);
+			InterpolateHashMap interpolateit = new InterpolateHashMap();
+			this.interpolatedvalues = interpolateit.interpolateList(pointmap);
+			writepointfile();
 		}
+		} 
 		
 	}
 	
@@ -390,6 +437,7 @@ public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListene
 	public void deletepoints(){
 		overlaytotal.clear();
 		pointmap.clear();
+		interpolatedvalues = new int[0][];
 		imp.updateAndDraw(); 
 	}
 	
@@ -397,6 +445,10 @@ public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListene
 	 * take the manually annotated points and interpolate them 
 	 */
 	public void interpolate_values(){
+		
+		if(pointmap.isEmpty()) {
+			IJ.log("No points have been selected so far for interpolation");
+		}else {
 		
 		InterpolateHashMap interpolateit = new InterpolateHashMap();
     	this.interpolatedvalues = interpolateit.interpolateList(pointmap);
@@ -419,6 +471,7 @@ public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListene
 	    overlaytotal.add(roi);
   	  	}		  	
   	  printhashmap(pointmap);
+		}
 	}
 	
 	/**
@@ -446,11 +499,11 @@ public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListene
 				File registerfile = new File(writetofilename);
 
 				int filenb =-1;
-				if(registerfile.exists()){filenb = registerfile.list().length;}
-				else{registerfile.mkdirs();}
-				String filename = writetofilename + File.separator+ "pointfile" + IJ.pad(filenb+1, 3) + ".txt";
-				FileWriter writer = new FileWriter(filename);
-				System.out.println(filename);
+				//if(registerfile.exists()){filenb = registerfile.list().length;}
+				//else{registerfile.mkdirs();}
+				//String filename = writetofilename + File.separator+ "pointfile" + IJ.pad(filenb+1, 3) + ".txt";
+				FileWriter writer = new FileWriter(writetofilename);
+				//stem.out.println(filename);
 				for(int i_points=0;i_points<interpolatedvalues[0].length;i_points++){
 					for(int i=0;i<interpolatedvalues.length;i++){
 					writer.write(interpolatedvalues[i][i_points] + ",");
@@ -458,7 +511,7 @@ public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListene
 					writer.write(System.lineSeparator());
 				}
 				writer.close();
-				IJ.log("File saved to: " + filename);
+				IJ.log("File saved to: " + writetofilename);
 			}catch(IOException ex){
 			IJ.log("Writing registration file did not work.");	
 			}
@@ -468,6 +521,20 @@ public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListene
 	  * loads a list of points from a .txt file to the interpolatedvalues array
 	 */
 	 public void loadpointfile(){
+		 
+		 	//generate an object of GenericDialog class to ask for the file path to load a pointfile
+			final GenericDialogPlus gd = new GenericDialogPlus( "Indicate path" );	
+			gd.addFileField( "Specify path to load pointfile", this.loadfile, 50);
+			gd.showDialog();
+			if ( gd.wasCanceled())
+					return;
+			
+			this.loadfile = gd.getNextString();
+		 
+
+			if(!this.loadfile.endsWith(".txt")) {
+				IJ.log("The provided filename does not end in .txt. Please provide a filename ending in .txt to load points");
+			}else {
 		
 		     File file = new File(loadfile); //for ex foo.txt
 		     ArrayList<int[]> intpos = new ArrayList<int[]>();
@@ -517,6 +584,7 @@ public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListene
 					e.printStackTrace();
 			}		
 	 }
+	}
 	 
 	 
 	/**

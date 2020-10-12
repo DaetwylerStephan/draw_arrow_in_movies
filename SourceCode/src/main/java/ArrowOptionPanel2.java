@@ -77,6 +77,7 @@ public class ArrowOptionPanel2 extends javax.swing.JFrame {
 	private JButton deletepoints_button;
 	private JButton help_button;
 	private JButton addoverlay_button;
+	private JButton open_newmovie_button;
 	private SPIM_DrawArrowInMovie_ spim_DrawArrowInMovie_parent;
 
 	
@@ -224,6 +225,17 @@ public class ArrowOptionPanel2 extends javax.swing.JFrame {
 		      else if(choice.equals("Permanently add overlay")) {
 	    		  spim_DrawArrowInMovie_parent.flattenimage();
 		      }
+		      else if(choice.equals("Open new movie")){
+		    	  int res = JOptionPane.showConfirmDialog(null, "Are you sure you want to open a new movie?", "Open new movie...",
+		    		      JOptionPane.YES_NO_OPTION,
+		    		      JOptionPane.PLAIN_MESSAGE);
+		    	  if(res == 0) {
+		    		  spim_DrawArrowInMovie_parent.openMovie();
+		    		         System.out.println("Pressed YES");
+		    	   } else if (res == 1) {
+		    		         System.out.println("Pressed NO");
+		    	    }
+		      }
 
 		}
 
@@ -301,6 +313,8 @@ public class ArrowOptionPanel2 extends javax.swing.JFrame {
 		deletepoints_button.addActionListener(new ButtonActionListener(deletepoints_button));
 		interpolate_button.addActionListener(new ButtonActionListener(interpolate_button));
 		addoverlay_button.addActionListener(new ButtonActionListener(addoverlay_button));
+		open_newmovie_button.addActionListener(new ButtonActionListener(open_newmovie_button));
+
 
 	}
 	
@@ -349,6 +363,8 @@ public class ArrowOptionPanel2 extends javax.swing.JFrame {
 		deletepoints_button.addActionListener(new ButtonActionListener(deletepoints_button));
 		interpolate_button.addActionListener(new ButtonActionListener(interpolate_button));
 		addoverlay_button.addActionListener(new ButtonActionListener(addoverlay_button));
+		open_newmovie_button.addActionListener(new ButtonActionListener(open_newmovie_button));
+
 	}
 	
 	
@@ -399,6 +415,8 @@ public class ArrowOptionPanel2 extends javax.swing.JFrame {
 		deletepoints_button.addActionListener(new ButtonActionListener(deletepoints_button));
 		interpolate_button.addActionListener(new ButtonActionListener(interpolate_button));
 		addoverlay_button.addActionListener(new ButtonActionListener(addoverlay_button));
+		open_newmovie_button.addActionListener(new ButtonActionListener(open_newmovie_button));
+		
 	}
 	
 	/*
@@ -764,12 +782,19 @@ public class ArrowOptionPanel2 extends javax.swing.JFrame {
 					addoverlay_button.setBounds(20,356,240, 20);    
 					
 				}
-
+			    
+			    {
+			    	open_newmovie_button=new JButton("Open new movie");
+					jPanelMain.add(open_newmovie_button);
+					open_newmovie_button.setFont(new java.awt.Font("Arial",0,10));
+					open_newmovie_button.setBounds(20,378,240, 20);    
+					
+				    }
 			   {
 				help_button=new JButton("Help");
 				jPanelMain.add(help_button);
 				help_button.setFont(new java.awt.Font("Arial",0,10));
-				help_button.setBounds(20,378,240, 20);    
+				help_button.setBounds(20,400,240, 20);    
 				
 			    }
 	  
@@ -777,13 +802,13 @@ public class ArrowOptionPanel2 extends javax.swing.JFrame {
 							{
 								jLabelPluginDescription = new JLabel();
 								jPanelMain.add(jLabelPluginDescription);
-								jLabelPluginDescription.setText("Cite: Daetwyler, Modes and Fiolka. ");
-								jLabelPluginDescription.setBounds(20, 398, 260, 30);
-								jLabelPluginDescription.setFont(new java.awt.Font("Arial",0,10));
+								jLabelPluginDescription.setText("Cite: Daetwyler, Modes and Fiolka (2020). Biology Open");
+								jLabelPluginDescription.setBounds(20, 422, 260, 30);
+								jLabelPluginDescription.setFont(new java.awt.Font("Arial",0,9));
 							}
 			}
 			pack();
-			this.setSize(280, 450);//size of whole panel
+			this.setSize(280, 475);//size of whole panel
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
