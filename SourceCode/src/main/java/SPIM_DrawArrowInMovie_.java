@@ -96,11 +96,14 @@ public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListene
 		//generate an object of GenericDialog class to which options can be added and which can be evaluated
 		final GenericDialogPlus gd = new GenericDialogPlus( "Indicate folder" );
 		if(open_images.length>0) {
-		gd.addChoice("Which movie to open", selection_open, "New movie");
-		gd.addChoice("List of open images", open_images, open_images[0]);
-		}
+		gd.addChoice("Do you want to annotate an already opened movie, or open a new movie?", selection_open, "New movie");
+		//gd.addMessage("If you selected \"Already opened movie\", choose below which one to open:");
+		gd.addChoice("Select from list of open images  (if \"Already opened movie\") selected", open_images, open_images[0]);
+		//gd.addMessage("If you selected \"New movie\", indicate the file path below tothe movie:");
+		gd.addFileField( "Load movie from file path (if \"New movie\") selected", "D:\\tutorial\\movie.tif", 50);
+		}else {
 		gd.addFileField( "Load movie", "D:\\tutorial\\movie.tif", 50);
-		gd.showDialog();
+		}gd.showDialog();
 
 		if ( gd.wasCanceled())
 			return;
@@ -296,11 +299,11 @@ public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListene
 	public void draw_arrowoverlay(){
 		//error message if no points have been selected
 		if(interpolatedvalues==null) {
-			IJ.log("No points have been selected or loaded so far.");
+			IJ.log("No points have been interpolated or loaded so far.");
 		}else {
 		//error message if no points have been selected after removing points	
 		if(interpolatedvalues.length<1) {
-			IJ.log("No points have been selected or loaded so far.");
+			IJ.log("No points have been interpolated or loaded so far.");
 		}
 		else {
 		//get your arrow from the arrowpanel
