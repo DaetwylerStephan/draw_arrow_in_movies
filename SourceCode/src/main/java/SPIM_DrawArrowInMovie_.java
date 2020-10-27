@@ -94,7 +94,7 @@ public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListene
 		System.out.println(Arrays.toString(open_images));
 		//----------get user input--------------------------------------------------------------------------
 		//generate an object of GenericDialog class to which options can be added and which can be evaluated
-		final GenericDialogPlus gd = new GenericDialogPlus( "Indicate folder" );
+		final GenericDialogPlus gd = new GenericDialogPlus( "Select movie to annotate" );
 		if(open_images.length>0) {
 		gd.addChoice("Do you want to annotate an already opened movie, or open a new movie?", selection_open, "New movie");
 		//gd.addMessage("If you selected \"Already opened movie\", choose below which one to open:");
