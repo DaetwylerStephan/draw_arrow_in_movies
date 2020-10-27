@@ -98,7 +98,7 @@ public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListene
 		if(open_images.length>0) {
 		gd.addChoice("Do you want to annotate an already opened movie, or open a new movie?", selection_open, "New movie");
 		//gd.addMessage("If you selected \"Already opened movie\", choose below which one to open:");
-		gd.addChoice("Select from list of open images  (if \"Already opened movie\") selected", open_images, open_images[0]);
+		gd.addChoice("Select from list of open movies (if \"Already opened movie\") selected", open_images, open_images[0]);
 		//gd.addMessage("If you selected \"New movie\", indicate the file path below tothe movie:");
 		gd.addFileField( "Load movie from file path (if \"New movie\") selected", "D:\\tutorial\\movie.tif", 50);
 		}else {
