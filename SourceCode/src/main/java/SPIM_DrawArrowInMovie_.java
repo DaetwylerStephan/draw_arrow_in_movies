@@ -124,14 +124,23 @@ public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListene
 		if(choice ==  "New movie") {
 		if(this.image.endsWith(".tif")){
 			//it either loads .tif file 
+			try {
 			imp = IJ.openImage(image);
 			imp.setTitle(image);
-			imp.show();
+			imp.show();}
+			catch(Exception e) {
+				IJ.log("File not found");
+			}
+			
 		}else{
 			//or an image sequence of individual tifs
+			try {
 			imp = openStack(image);
 			imp.setTitle(image);
 			imp.show();
+			}catch(Exception e) {
+				IJ.log("File not found");
+			}
 		}
 		}else {
 			imp = WindowManager.getImage(opened_movie);
@@ -540,6 +549,11 @@ public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListene
 			}else {
 		
 		     File file = new File(loadfile); //for ex foo.txt
+		     
+		     if(!file.exists()) {
+		    	 IJ.log("File not found");
+		     }else {
+		     
 		     ArrayList<int[]> intpos = new ArrayList<int[]>();
 		     
 		     try {
@@ -586,7 +600,7 @@ public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListene
 		     } catch (IOException e) {
 					e.printStackTrace();
 			}		
-	 }
+	 }}
 	}
 	 
 	 
