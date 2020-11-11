@@ -363,7 +363,7 @@ public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListene
 			//generate unique identifier for this overlay so that it can be retrieved later
 			int numberofdigits = (int) Math.floor(Math.log10(interpolatedvalues[0].length))+2;
 			String roiname = "roi" + IJ.pad(planenb, numberofdigits);
-			
+
 			overlayarrow.add(roi, roiname);
 			
 			imp.updateAndDraw(); 			
@@ -405,6 +405,7 @@ public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListene
 	/**
 	 * flatten image. Note imp.flattenStack() produced some strange artefact - therefore, flatten frame by frame
 	 */
+	
 	public void flattenimage(){
 		imp.setAntialiasRendering(true);
 		Overlay alloverlays = imp.getOverlay();
@@ -414,7 +415,8 @@ public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListene
 		if (imp.getBitDepth()!=24) {
 			new ImageConverter(imp).convertToRGB();
 		}
-				
+		
+		ImageStack newstack = imp.getStack().duplicate();	
 		for(int planeiter =0; planeiter < interpolatedvalues[0].length;planeiter++) {
 		
 			//get the coordinates
@@ -431,10 +433,15 @@ public class SPIM_DrawArrowInMovie_ implements PlugIn, KeyListener, MouseListene
 			
 			ImagePlus newimage = currentimage.flatten();
 						
-			imp.getStack().setProcessor(newimage.getProcessor(), planenb);
-		}	
+			newstack.setProcessor(newimage.getProcessor(), planenb);
+		}
+		
+		imp.setStack(newstack);
+		
 		}
 
+
+	
 	/**
 	 * delete arrow overlay in image 
 	 */
